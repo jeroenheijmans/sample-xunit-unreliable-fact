@@ -9,11 +9,6 @@ namespace SampleXunitUnreliableFact.XunitExtensions
     )]
     public class UnreliableFact : FactAttribute
     {
-        public UnreliableFact(params string[] retryableExceptionTypeNames)
-        {
-            RetryableExceptionTypeNames = retryableExceptionTypeNames;
-        }
-
-        public string[] RetryableExceptionTypeNames { get; set; }
+        public string RetryableException { get; set; }
     }
 }

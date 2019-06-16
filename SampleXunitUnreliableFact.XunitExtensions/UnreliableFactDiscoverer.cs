@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
@@ -15,14 +15,14 @@ namespace SampleXunitUnreliableFact.XunitExtensions
 
         public IEnumerable<IXunitTestCase> Discover(ITestFrameworkDiscoveryOptions discoveryOptions, ITestMethod testMethod, IAttributeInfo factAttribute)
         {
-            var retryableExceptionTypeNames = factAttribute.GetNamedArgument<string[]>(nameof(UnreliableFact.RetryableExceptionTypeNames));
-
+            var retryableException = factAttribute.GetNamedArgument<string>("RetryableException");
+            
             yield return new UnreliableTestCase(
                 diagnosticMessageSink,
                 discoveryOptions.MethodDisplayOrDefault(),
                 discoveryOptions.MethodDisplayOptionsOrDefault(),
                 testMethod,
-                retryableExceptionTypeNames
+                retryableException
             );
         }
     }

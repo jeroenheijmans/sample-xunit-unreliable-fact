@@ -6,6 +6,9 @@ namespace SampleXunitUnreliableFact.MyLibrary
     {
         private readonly Random random;
 
+        // TODO: Replace with more reliable simulation of intermittent issues.
+        // When a TestCase runs a test multiple times, a fresh instance of the class is
+        // created each time, thus resetting the counter.
         public int Counter { get; private set; }
 
         public WeirdCalculator(int randomSeed)

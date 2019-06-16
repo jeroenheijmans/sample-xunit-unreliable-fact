@@ -10,7 +10,7 @@ namespace SampleXunitUnreliableFact.MyLibrary
 
     public class WeirdCalculatorUnreliableFacts
     {
-        [UnreliableFact]
+        [UnreliableFact(RetryableException = "System.InvalidOperationException")]
         public void SquareInputReliably_WhenGivenInput_ReturnsSquare()
         {
             var unit = new WeirdCalculator(randomSeed: 3);
@@ -18,26 +18,24 @@ namespace SampleXunitUnreliableFact.MyLibrary
             Assert.Equal(25, result);
         }
 
-        [UnreliableFact]
-        public void SquareInputAfterTwoTries_WhenGivenInputTwice_ReturnsSquareSecondTime()
+        [UnreliableFact(RetryableException = "System.InvalidOperationException")]
+        public void SquareInputAfterTwoTries_WhenGivenInput_ReturnsSquare()
         {
             var unit = new WeirdCalculator(randomSeed: 3);
-            Assert.Throws<InvalidOperationException>(() => unit.SquareInputAfterTwoTries(5));
             var result = unit.SquareInputAfterTwoTries(5);
             Assert.Equal(25, result);
         }
 
-        [UnreliableFact]
-        public void SquareInputUnreliably_WhenSeedCausesTwoFailures_ReturnsSquareThirdTime()
+        [UnreliableFact(RetryableException = "System.InvalidOperationException")]
+        public void SquareInputUnreliably_WhenCalled_ReturnsSquare()
         {
+            // This seed will cause 2 failures, so within the 'grasp' of [UnreliableFact] by default:
             var unit = new WeirdCalculator(randomSeed: 3);
-            Assert.Throws<InvalidOperationException>(() => unit.SquareInputUnreliably(5));
-            Assert.Throws<InvalidOperationException>(() => unit.SquareInputUnreliably(5));
             var result = unit.SquareInputUnreliably(5);
             Assert.Equal(25, result);
         }
 
-        [UnreliableFact]
+        [UnreliableFact(RetryableException = "System.InvalidOperationException")]
         public void SquareInputOnlyForVeryLowNumbers_WhenGivenLowNumber_ReturnsSquare()
         {
             var unit = new WeirdCalculator(randomSeed: 3);
@@ -45,8 +43,8 @@ namespace SampleXunitUnreliableFact.MyLibrary
             Assert.Equal(9, result);
         }
 
-        [UnreliableFact]
-        public void SquareInputOnlyForVeryLowNumbers_WhenGivenHighNumber_Throws()
+        [UnreliableFact(RetryableException = "System.InvalidOperationException")]
+        public void SquareInputOnlyForVeryLowNumbers_WhenGivenHighNumber_ThrowsEvenForUnreliableFact()
         {
             var unit = new WeirdCalculator(randomSeed: 3);
             Assert.Throws<InvalidOperationException>(() => unit.SquareInputOnlyForVeryLowNumbers(5));
