@@ -32,5 +32,12 @@ namespace SampleXunitUnreliableFact.MyLibrary
             if (random.NextDouble() < 0.75) throw new InvalidOperationException("Randomly failed!");
             return input * input;
         }
+
+        public int SquareInputOnlyForVeryLowNumbers(int input)
+        {
+            Counter++;
+            if (input >= 5) throw new InvalidOperationException("Can only square numbers under five");
+            return input * input;
+        }
     }
 }
