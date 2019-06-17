@@ -9,7 +9,7 @@ namespace SampleXunitUnreliableFact.XunitExtensions
 {
     public class UnreliableTestCase : XunitTestCase
     {
-        private const int maxNrOfRetries = 6;
+        private const int MaxNrOfRetries = 3;
         private string retryableException;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -41,10 +41,12 @@ namespace SampleXunitUnreliableFact.XunitExtensions
             ExceptionAggregator aggregator,
             CancellationTokenSource cancellationTokenSource)
         {
-            var i = 0;
+            var nrOfTries = 0;
 
             while (true)
             {
+                nrOfTries++;
+
                 var decoratedMessageBus = new ExceptionTrackingMessageBus(messageBus, retryableException);
 
                 var summary = await base.RunAsync(
@@ -54,9 +56,9 @@ namespace SampleXunitUnreliableFact.XunitExtensions
                     aggregator,
                     cancellationTokenSource);
 
-                if (++i >= maxNrOfRetries
-                    || summary.Failed == 0
-                    || (aggregator.HasExceptions && !decoratedMessageBus.HasSeenRetryableException))
+                var hasNormalException = aggregator.HasExceptions && !decoratedMessageBus.HasSeenRetryableException;
+
+                if (nrOfTries >= MaxNrOfRetries || summary.Failed == 0 || hasNormalException)
                 {
                     decoratedMessageBus.Flush();
                     return summary;
@@ -65,7 +67,7 @@ namespace SampleXunitUnreliableFact.XunitExtensions
                 diagnosticMessageSink.OnMessage(new DiagnosticMessage(
                     "Test execution of {0} failed with retryable exception. Tried {1} times so far.",
                     DisplayName,
-                    i
+                    nrOfTries
                 ));
             }
         }
