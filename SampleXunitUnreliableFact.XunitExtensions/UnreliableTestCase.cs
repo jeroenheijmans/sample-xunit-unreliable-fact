@@ -56,9 +56,9 @@ namespace SampleXunitUnreliableFact.XunitExtensions
                     aggregator,
                     cancellationTokenSource);
 
-                var hasNormalException = aggregator.HasExceptions && !decoratedMessageBus.HasSeenRetryableException;
+                var hasNormalException = summary.Failed > 0 && !decoratedMessageBus.HasSeenRetryableException;
 
-                if (nrOfTries >= MaxNrOfRetries || summary.Failed == 0 || hasNormalException)
+                if (aggregator.HasExceptions || summary.Failed == 0 || nrOfTries >= MaxNrOfRetries || hasNormalException)
                 {
                     decoratedMessageBus.Flush();
                     return summary;
